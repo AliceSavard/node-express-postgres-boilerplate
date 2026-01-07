@@ -1,0 +1,19 @@
+{
+	"extends": "@tsconfig/node24/tsconfig.json",
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"target": "ES2022",
+		"jsx": "react",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"noImplicitAny": false,
+		"sourceMap": true,
+		"outDir": "./dist/",
+		"skipLibCheck": true,
+		"lib": ["DOM", "ES2020"],
+		"types": ["node"]
+	},
+	"exclude": ["node_modules"],
+	"include": ["./src"]
+}

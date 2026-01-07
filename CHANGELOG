@@ -34,3 +34,8 @@ straightforward as possible.
 
 ### Added
 - [EX](https://macropolo.atlassian.net/browse/EX-2) Create source code structure
+
+## [1.0.0] - 2026-01-07
+- Alice migrated JS to TS
+- Alice removed sequelize in favour of SQL
+- Alice migrated this project to Node 24

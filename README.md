@@ -14,11 +14,11 @@ This is a boilerplate application for building REST APIs in Node.js using ES6, E
 
 This boilerplate comes with a collection of npm scripts to make your life easier, you'll run them with `npm run <script name>` or `yarn <script name>`:
 
--   `dev`: Run the application in development mode
--   `lint`: Run ESLint
--   `lint:fix`: Fix ESLint errors
--   `prettier`: Run prettier
--   `prettier:fix`: Fix prettier errors
+- `dev`: Run the application in development mode
+- `lint`: Run ESLint
+- `lint:fix`: Fix ESLint errors
+- `prettier`: Run prettier
+- `prettier:fix`: Fix prettier errors
 
 ## Project Structure
 
@@ -71,19 +71,7 @@ List of available routes:
 
 ## Database
 
-This app uses [Sequelize](https://sequelize.org/) - an **Object-Relational Mapper** to maps object syntax into Postgres database, and [Sequelize CLI](https://github.com/sequelize/cli) package to manage sequelize.
-
-There are 2 ways to run `sequelize-cli`.
-
-```bash
-# Method 1: Use sequelize global
-npm install -g sequelize-cli
-
-sequelize db:migrate
-
-# Method 2
-node_modules/.bin/sequelize db:migrate
-```
+This app connects to a Postgres database, and runs SQL queries.
 
 ## Error Handling
 
@@ -92,11 +80,11 @@ The app has a centralized error handling mechanism.
 Controllers should try to catch the errors and forward them to the error handling middleware (by calling `next(error)`). For convenience, you can also wrap the controller inside the catchAsync utility wrapper, which forwards the error.
 
 ```javascript
-const catchAsync = require('../utils/catchAsync');
+const catchAsync = require("../utils/catchAsync");
 
 const controller = catchAsync(async (req, res) => {
 	// this error will be forwarded to the error handling middleware
-	throw new Error('Something wrong happened');
+	throw new Error("Something wrong happened");
 });
 ```
 
@@ -117,14 +105,14 @@ For example, if you are trying to get a user from the DB who is not found, and y
 
 ```javascript
 // user.controller.js
-const httpStatus = require('http-status');
-const ApiError = require('../utils/ApiError');
+const httpStatus = require("http-status");
+const ApiError = require("../utils/ApiError");
 
 const getUser = catchAsync(async (req, res) => {
 	const user = await userService.getUserById(req.params.userId);
 
 	if (!user) {
-		throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+		throw new ApiError(httpStatus.NOT_FOUND, "User not found");
 	}
 
 	res.send({ user });
@@ -138,17 +126,17 @@ Request data is validated using [Joi](https://hapi.dev/family/joi/). Check the [
 The validation schemas are defined in the `src/validations` directory and are used in the routes by providing them as parameters to the `validate` middleware.
 
 ```javascript
-const express = require('express');
-const validate = require('../../middlewares/validate');
-const userValidation = require('../../validations/user.validation');
-const userController = require('../../controllers/user.controller');
+const express = require("express");
+const validate = require("../../middlewares/validate");
+const userValidation = require("../../validations/user.validation");
+const userController = require("../../controllers/user.controller");
 
 const router = express.Router();
 
 router.post(
-	'/users',
+	"/users",
 	validate(userValidation.createUser),
-	userController.createUser
+	userController.createUser,
 );
 ```
 
@@ -158,7 +146,7 @@ To require authentication for certain routes, you can use `jwt` function at `con
 
 ```javascript
 // app.js
-const jwt = require('./config/jwt');
+const jwt = require("./config/jwt");
 
 app.use(jwt());
 ```
@@ -170,20 +158,20 @@ These routes require a valid JWT access token in the Authorization request heade
 The `auth` middleware is used to require certain rights/permissions to access a route.
 
 ```javascript
-const express = require('express');
-const { grantAccess } = require('../../middlewares/validateAccessControl');
-const validate = require('../../middlewares/validate');
-const userValidation = require('../../validations/user.validation');
-const userController = require('../../controllers/user.controller');
+const express = require("express");
+const { grantAccess } = require("../../middlewares/validateAccessControl");
+const validate = require("../../middlewares/validate");
+const userValidation = require("../../validations/user.validation");
+const userController = require("../../controllers/user.controller");
 
 const router = express.Router();
 
 router
-	.route('/')
+	.route("/")
 	.get(
-		grantAccess('readAny', 'user'),
+		grantAccess("readAny", "user"),
 		validate(userValidation.getUsers),
-		userController.getUsers
+		userController.getUsers,
 	);
 ```
 
@@ -200,14 +188,14 @@ Import the logger from `src/utils/logger.js`. It is using the [Winston](https://
 Logging should be done according to the following severity levels (ascending order from most important to least important):
 
 ```javascript
-const logger = require('<path to src>/utils/logger');
+const logger = require("<path to src>/utils/logger");
 
-logger.error('message'); // level 0
-logger.warn('message'); // level 1
-logger.info('message'); // level 2
-logger.http('message'); // level 3
-logger.verbose('message'); // level 4
-logger.debug('message'); // level 5
+logger.error("message"); // level 0
+logger.warn("message"); // level 1
+logger.info("message"); // level 2
+logger.http("message"); // level 3
+logger.verbose("message"); // level 4
+logger.debug("message"); // level 5
 ```
 
 In development mode, log messages of all severity levels will be printed to the console.
@@ -220,7 +208,7 @@ Note: API request information (request url, response code, timestamp, etc.) are 
 
 ## Inspirations
 
--   [hagopj13/node-express-boilerplate](https://github.com/hagopj13/node-express-boilerplate)
+- [hagopj13/node-express-boilerplate](https://github.com/hagopj13/node-express-boilerplate)
 
 ## License
 
@@ -228,9 +216,9 @@ To be updated
 
 ## TODOs
 
--   [x] Update authentication flow to use refreshToken
--   [x] Rewrite README using this sample [template](https://github.com/talyssonoc/node-api-boilerplate)
--   [x] Handle postgres with [Squelize](https://www.npmjs.com/package/sequelize)
--   [x] Update CHANGELOG
--   [ ] Add test
--   [ ] Refactor code use Typescript
+- [x] Update authentication flow to use refreshToken
+- [x] Rewrite README using this sample [template](https://github.com/talyssonoc/node-api-boilerplate)
+- [x] Handle postgres with [Squelize](https://www.npmjs.com/package/sequelize)
+- [x] Update CHANGELOG
+- [ ] Add test
+- [ ] Refactor code use Typescript
