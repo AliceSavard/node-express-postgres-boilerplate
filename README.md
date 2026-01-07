@@ -6,9 +6,9 @@ This is a boilerplate application for building REST APIs in Node.js using ES6, E
 
 ### Installation
 
-1. Clone the repository with `https://github.com/japananh/node-express-postgres-boilerplate.git`
-2. Install the dependencies with `yarn install` (click here if [you don't have Yarn installed](https://yarnpkg.com/getting-started/install)
-3. Setup the database on `src/config/postgres.js` and config information on `env.example`
+1. Clone the repository with `https://github.com/AliceSavard/node-express-postgres-boilerplate.git`
+2. Install the dependencies with `npm install`
+3. Copy `.env.example` to `.env` and edit to setup your database etc
 
 ### Scripts
 
@@ -26,11 +26,7 @@ This boilerplate comes with a collection of npm scripts to make your life easier
 src\
  |--config\         # Environment variables and configuration related things
  |--controllers\    # Route controllers (controller layer)
- |--db\
-  |--config\        # Configuration for database
-  |--migrations\    # Database migrations
-  |--models\        # Database models
-  |--seeders\       #
+ |--db\	            # Postgres database connection
  |--docs\           # Swagger files
  |--middlewares\    # Custom express middlewares
  |--routes\         # Routes
@@ -101,71 +97,21 @@ When running in development mode, the error response also contains the error sta
 
 The app has a utility ApiError class to which you can attach a response code and a message, and then throw it from anywhere (catchAsync will catch it).
 
-For example, if you are trying to get a user from the DB who is not found, and you want to send a 404 error, the code should look something like:
-
-```javascript
-// user.controller.js
-const httpStatus = require("http-status");
-const ApiError = require("../utils/ApiError");
-
-const getUser = catchAsync(async (req, res) => {
-	const user = await userService.getUserById(req.params.userId);
-
-	if (!user) {
-		throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-	}
-
-	res.send({ user });
-});
-```
-
 ## Validation
 
 Request data is validated using [Joi](https://hapi.dev/family/joi/). Check the [documentation](https://hapi.dev/family/joi/api/) for more details on how to write Joi validation schemas.
 
 The validation schemas are defined in the `src/validations` directory and are used in the routes by providing them as parameters to the `validate` middleware.
 
-```javascript
-const express = require("express");
-const validate = require("../../middlewares/validate");
-const userValidation = require("../../validations/user.validation");
-const userController = require("../../controllers/user.controller");
-
-const router = express.Router();
-
-router.post(
-	"/users",
-	validate(userValidation.createUser),
-	userController.createUser,
-);
-```
-
 ## Authentication
 
-To require authentication for certain routes, you can use `jwt` function at `config` folder
-
-```javascript
-// app.js
-const jwt = require("./config/jwt");
-
-app.use(jwt());
-```
-
-These routes require a valid JWT access token in the Authorization request header using the Bearer schema. If the request does not contain a valid access token, an Unauthorized (401) error is thrown.
+To require authentication for certain routes, you can use `jwt` function from `config/jwt`. These routes require a valid JWT access token in the Authorization request header using the Bearer schema. If the request does not contain a valid access token, an Unauthorized (401) error is thrown.
 
 ## Authorization
 
 The `auth` middleware is used to require certain rights/permissions to access a route.
 
 ```javascript
-const express = require("express");
-const { grantAccess } = require("../../middlewares/validateAccessControl");
-const validate = require("../../middlewares/validate");
-const userValidation = require("../../validations/user.validation");
-const userController = require("../../controllers/user.controller");
-
-const router = express.Router();
-
 router
 	.route("/")
 	.get(
@@ -183,13 +129,11 @@ If the user making the request does not have the required permissions to access 
 
 ## Logging
 
-Import the logger from `src/utils/logger.js`. It is using the [Winston](https://github.com/winstonjs/winston) logging library.
+Import the logger from `src/utils/logger`. It is using the [Winston](https://github.com/winstonjs/winston) logging library.
 
 Logging should be done according to the following severity levels (ascending order from most important to least important):
 
 ```javascript
-const logger = require("<path to src>/utils/logger");
-
 logger.error("message"); // level 0
 logger.warn("message"); // level 1
 logger.info("message"); // level 2
@@ -212,7 +156,7 @@ Note: API request information (request url, response code, timestamp, etc.) are 
 
 ## License
 
-To be updated
+Be gay do crimes.
 
 ## TODOs
 
@@ -220,5 +164,5 @@ To be updated
 - [x] Rewrite README using this sample [template](https://github.com/talyssonoc/node-api-boilerplate)
 - [x] Handle postgres with [Squelize](https://www.npmjs.com/package/sequelize)
 - [x] Update CHANGELOG
-- [ ] Add test
-- [ ] Refactor code use Typescript
+- [ ] Add tests (maybe)
+- [X] Refactor code use Typescript
