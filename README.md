@@ -127,6 +127,10 @@ The permissions are role-based. You can view the permissions/rights of each role
 
 If the user making the request does not have the required permissions to access this route, a Forbidden (403) error is thrown.
 
+## Tests
+
+Initial jest tests have been added with minimal code coverage, and some places where additional tests start to require configuration and env variables to actually be in place.
+
 ## Logging
 
 Import the logger from `src/utils/logger`. It is using the [Winston](https://github.com/winstonjs/winston) logging library.
@@ -164,5 +168,5 @@ Be gay do crimes.
 - [x] Rewrite README using this sample [template](https://github.com/talyssonoc/node-api-boilerplate)
 - [x] Handle postgres with [Squelize](https://www.npmjs.com/package/sequelize)
 - [x] Update CHANGELOG
-- [ ] Add tests (maybe)
+- [X] Add tests
 - [X] Refactor code use Typescript
