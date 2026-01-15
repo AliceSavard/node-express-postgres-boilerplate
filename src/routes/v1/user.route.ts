@@ -3,14 +3,13 @@ const validate = require("../../middlewares/validate");
 const userValidation = require("../../validations/user.validation");
 const userController = require("../../controllers/user.controller");
 const { grantAccess } = require("../../middlewares/validateAccessControl");
-const { resources } = require("../../config/roles");
 
 const router = express.Router();
 
 router
 	.route("/")
 	.get(
-		grantAccess("readAny", resources.USERINFO),
+		grantAccess(1),
 		validate(userValidation.getUsers),
 		userController.getUsers,
 	);
@@ -18,17 +17,17 @@ router
 router
 	.route("/:userId")
 	.get(
-		grantAccess("readAny", resources.USERINFO),
+		grantAccess(1),
 		validate(userValidation.getUser),
 		userController.getUser,
 	)
 	.patch(
-		grantAccess("updateAny", resources.USERINFO),
+		grantAccess(2),
 		validate(userValidation.updateUser),
 		userController.updateUser,
 	)
 	.delete(
-		grantAccess("deleteAny", resources.USERINFO),
+		grantAccess(3),
 		validate(userValidation.deleteUser),
 		userController.deleteUser,
 	);
@@ -61,7 +60,7 @@ export default router;
  *                - name
  *                - email
  *                - password
- *                - role
+ *                - tier
  *              properties:
  *                name:
  *                  type: string
@@ -74,14 +73,14 @@ export default router;
  *                  format: password
  *                  minLength: 8
  *                  description: At least one number and one letter
- *                role:
- *                   type: string
- *                   enum: [user, admin]
+ *                tier:
+ *                   type: number
+ *                   description: User tier level
  *              example:
  *                name: fake name
  *                email: fake@example.com
  *                password: password1
- *                role: user
+ *                tier: 1
  *      responses:
  *        "201":
  *          description: Created
@@ -114,10 +113,10 @@ export default router;
  *            type: string
  *          description: User email
  *        - in: query
- *          name: role
+ *          name: tier
  *          schema:
  *            type: string
- *          description: User role
+ *          description: User tier
  *        - in: query
  *          name: sortBy
  *          schema:

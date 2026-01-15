@@ -21,7 +21,7 @@ async function generateResetPasswordToken(email) {
 	return resetPasswordToken;
 }
 
-async function generateAuthTokens({ userId, roleId }) {
+async function generateAuthTokens({ userId, tier }) {
 	const refreshTokenExpires = generateExpires(
 		config.jwt.refreshExpirationDays * 24,
 	);
@@ -31,7 +31,7 @@ async function generateAuthTokens({ userId, roleId }) {
 	const accessTokenExpires = generateExpires(
 		config.jwt.accessExpirationMinutes / 60,
 	);
-	const accessToken = generateToken({ userId, roleId }, accessTokenExpires);
+	const accessToken = generateToken({ userId, tier }, accessTokenExpires);
 
 	return {
 		refresh: {

@@ -4,17 +4,19 @@ import ApiError from "../utils/ApiError.js";
 import { encryptData } from "../utils/auth.js";
 import config from "../config/config.js";
 import { queryOne, queryMany, execute } from "../db/db.js";
-import { User, UserWithRole } from "../db/types.js";
-import * as roleService from "./role.service.js";
+import { User } from "../db/types.js";
 
-async function getUserByEmail(email: string): Promise<UserWithRole | null> {
-	const user = await queryOne<UserWithRole>(
+async function getUserByEmail(email: string): Promise<User | null> {
+	const user = await queryOne<User>(
 		`SELECT 
-			u.id, u.name, u.email, u.role_id, u.password, 
-			u.created_date_time, u.modified_date_time,
-			r.id as "role.id", r.name as "role.name"
+			u.id,
+			u.name,
+			u.email,
+			u.tier,
+			u.password, 
+			u.created_date_time,
+			u.modified_date_time
 		FROM "user" u
-		INNER JOIN role r ON u.role_id = r.id
 		WHERE u.email = $1`,
 		[email],
 	);
@@ -22,14 +24,17 @@ async function getUserByEmail(email: string): Promise<UserWithRole | null> {
 	return user;
 }
 
-async function getUserById(id: number): Promise<UserWithRole | null> {
-	const user = await queryOne<UserWithRole>(
+async function getUserById(id: number): Promise<User | null> {
+	const user = await queryOne<User>(
 		`SELECT 
-			u.id, u.name, u.email, u.role_id, u.password,
-			u.created_date_time, u.modified_date_time,
-			r.id as "role.id", r.name as "role.name"
+			u.id,
+			u.name,
+			u.email,
+			u.tier,
+			u.password,
+			u.created_date_time,
+			u.modified_date_time
 		FROM "user" u
-		INNER JOIN role r ON u.role_id = r.id
 		WHERE u.id = $1`,
 		[id],
 	);
@@ -38,7 +43,7 @@ async function getUserById(id: number): Promise<UserWithRole | null> {
 }
 
 async function createUser(req: any): Promise<User> {
-	const { email, name, password, roleId } = req.body;
+	const { email, name, password, tier } = req.body;
 	const hashedPassword = await encryptData(password);
 	const user = await getUserByEmail(email);
 
@@ -46,39 +51,36 @@ async function createUser(req: any): Promise<User> {
 		throw new ApiError(httpStatus.CONFLICT, "This email already exits");
 	}
 
-	const role = await roleService.getRoleById(roleId);
-
-	if (!role) {
-		throw new ApiError(httpStatus.NOT_FOUND, "Role not found");
-	}
-
 	const createdUser = await queryOne<User>(
-		`INSERT INTO "user" (name, email, role_id, password, created_date_time, modified_date_time)
+		`INSERT INTO "user" (name, email, tier, password, created_date_time, modified_date_time)
 		VALUES ($1, $2, $3, $4, NOW(), NOW())
 		RETURNING *`,
-		[name, email, roleId, hashedPassword],
+		[name, email, tier, hashedPassword],
 	);
 
 	return createdUser!;
 }
 
-async function getUsers(
-	req: any,
-): Promise<{ count: number; rows: UserWithRole[] }> {
+async function getUsers(req: any): Promise<{ count: number; rows: User[] }> {
 	const { page: defaultPage, limit: defaultLimit } = config.pagination;
 	const { page = defaultPage, limit = defaultLimit } = req.query;
 
 	const offset = getOffset(page, limit);
 
 	const [users, countResult] = await Promise.all([
-		queryMany<UserWithRole>(
+		queryMany<User>(
 			`SELECT 
-				u.id, u.name, u.email, u.role_id,
-				u.created_date_time, u.modified_date_time,
-				r.id as "role.id", r.name as "role.name"
+				u.id,
+				u.name,
+				u.email,
+				u.tier,
+				u.created_date_time,
+				u.modified_date_time
 			FROM "user" u
-			INNER JOIN role r ON u.role_id = r.id
-			ORDER BY u.name ASC, u.created_date_time DESC, u.modified_date_time DESC
+			ORDER BY
+				u.name ASC,
+				u.created_date_time DESC,
+				u.modified_date_time DESC
 			LIMIT $1 OFFSET $2`,
 			[limit, offset],
 		),
@@ -126,7 +128,7 @@ async function updateUser(req: any): Promise<User> {
 		if (existedUser && existedUser.id !== userId) {
 			throw new ApiError(
 				httpStatus.CONFLICT,
-				"This email is already exist",
+				"This email already exists",
 			);
 		}
 	}
@@ -137,7 +139,7 @@ async function updateUser(req: any): Promise<User> {
 	let paramIndex = 1;
 
 	Object.keys(req.body).forEach((key) => {
-		if (["name", "email", "password", "role_id"].includes(key)) {
+		if (["name", "email", "password", "tier"].includes(key)) {
 			updates.push(`${key} = $${paramIndex}`);
 			values.push(req.body[key]);
 			paramIndex++;

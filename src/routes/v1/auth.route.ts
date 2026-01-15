@@ -47,7 +47,7 @@ export default router;
  *                - name
  *                - email
  *                - password
- *                - role
+ *                - tier
  *              properties:
  *                name:
  *                  type: string
@@ -60,14 +60,14 @@ export default router;
  *                  format: password
  *                  minLength: 8
  *                  description: At least one number and one letter
- *                role:
- *                  type: string
- *                  description: user/admin
+ *                tier:
+ *                  type: number
+ *                  description: subscription level
  *              example:
  *                name: fake name
  *                email: fake@example.com
  *                password: password1
- *                role: user
+ *                tier: 1
  *      responses:
  *        "201":
  *          description: Created

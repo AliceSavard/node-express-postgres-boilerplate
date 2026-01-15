@@ -1,24 +1,16 @@
 const httpStatus = require("http-status");
-const { roles } = require("../config/roles");
 const ApiError = require("../utils/ApiError");
 
-function grantAccess(action, resource) {
+function grantAccess(tier_required: number) {
 	return async (req, _res, next) => {
 		try {
-			// eslint-disable-next-line eqeqeq
-			const isOwnedUser = req.user.userId == req.params.userId;
-			const modifiedAction = isOwnedUser
-				? action.replace("Any", "Own")
-				: action;
-
-			const permission = roles
-				.can(JSON.stringify(req.user.roleId))
-				[modifiedAction](resource);
-
-			if (!permission.granted) {
+			if (
+				req.user.userId != req.params.userId ||
+				req.user.tier < tier_required
+			) {
 				throw new ApiError(
 					httpStatus.FORBIDDEN,
-					"You don't have enough permission to perform this action",
+					"You don't have permission to perform this action",
 				);
 			}
 			next();

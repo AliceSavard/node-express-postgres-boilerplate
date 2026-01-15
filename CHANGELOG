@@ -39,3 +39,6 @@ straightforward as possible.
 - Alice migrated JS to TS
 - Alice removed sequelize in favour of SQL
 - Alice migrated this project to Node 24
+
+## [1.0.0] - 2026-01-14
+- Alice replaced the entire "roles" with simple numeric tiers for users, more appropriate for use case of B2C/Prosumer SaaS

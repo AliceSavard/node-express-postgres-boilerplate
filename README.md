@@ -58,13 +58,6 @@ List of available routes:
 `PATCH /v1/users/:userId` - update user\
 `DELETE /v1/users/:userId` - delete user
 
-**Role routes**:\
-`POST /v1/roles` - create a role\
-`GET /v1/roles` - get all roles\
-`GET /v1/roles/:roleId` - get a role\
-`PATCH /v1/roles/:roleId` - update a role\
-`DELETE /v1/roles/:roleId` - delete a role
-
 ## Database
 
 This app connects to a Postgres database, and runs SQL queries.
@@ -115,17 +108,13 @@ The `auth` middleware is used to require certain rights/permissions to access a 
 router
 	.route("/")
 	.get(
-		grantAccess("readAny", "user"),
+		grantAccess(2),
 		validate(userValidation.getUsers),
 		userController.getUsers,
 	);
 ```
 
-In the example above, an authenticated user can access this route only if that user has the `getUsers` permission.
-
-The permissions are role-based. You can view the permissions/rights of each role in the `src/config/roles.js` file.
-
-If the user making the request does not have the required permissions to access this route, a Forbidden (403) error is thrown.
+In the example above, an authenticated user can access this route only if that user is tier 2 or higher. This is a simple system for managing users at different levels of purchased subscriptions.
 
 ## Tests
 
