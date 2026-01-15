@@ -42,3 +42,4 @@ straightforward as possible.
 
 ## [1.0.0] - 2026-01-14
 - Alice replaced the entire "roles" with simple numeric tiers for users, more appropriate for use case of B2C/Prosumer SaaS
+- Alice decided to remove swagger from this boilerplate to simplify it

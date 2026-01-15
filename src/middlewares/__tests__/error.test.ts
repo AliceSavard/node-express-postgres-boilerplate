@@ -12,8 +12,7 @@ jest.mock("../../config/config.ts", () => ({
 }));
 
 // Import after mocking
-const { errorHandler } = require("../error.ts");
-const httpStatus = require("http-status");
+import { errorHandler } from "../error";
 
 import { Request, Response, NextFunction } from "express";
 

@@ -1,8 +1,8 @@
 import http from "http";
-import app from "./app.js";
-import config from "./config/config.js";
-import logger from "./config/logger.js";
-import { postgres } from "./db/db.js";
+import app from "./app";
+import config from "./config/config";
+import logger from "./config/logger";
+import { postgres } from "./db/db";
 
 // Test database connection
 (async () => {

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bycrypt from "bcrypt";
-const config = require("../config/config");
+import config from "../config/config";
 
 function generateToken(data, expiresMs, secret = config.jwt.secret) {
 	const token = jwt.sign(

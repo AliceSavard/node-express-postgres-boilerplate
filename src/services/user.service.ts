@@ -1,10 +1,11 @@
 import httpStatus from "http-status";
-import { getOffset } from "../utils/query.js";
-import ApiError from "../utils/ApiError.js";
-import { encryptData } from "../utils/auth.js";
-import config from "../config/config.js";
-import { queryOne, queryMany, execute } from "../db/db.js";
-import { User } from "../db/types.js";
+import { getOffset } from "../utils/query";
+import ApiError from "../utils/ApiError";
+import { encryptData } from "../utils/auth";
+import config from "../config/config";
+import { queryOne, queryMany, execute } from "../db/db";
+import { User } from "../db/types";
+import { revokeAllUserTokens } from "./tokenRevocation.service";
 
 async function getUserByEmail(email: string): Promise<User | null> {
 	const user = await queryOne<User>(
@@ -13,7 +14,8 @@ async function getUserByEmail(email: string): Promise<User | null> {
 			u.name,
 			u.email,
 			u.tier,
-			u.password, 
+			u.password,
+			u.token_version,
 			u.created_date_time,
 			u.modified_date_time
 		FROM "user" u
@@ -32,6 +34,7 @@ async function getUserById(id: number): Promise<User | null> {
 			u.email,
 			u.tier,
 			u.password,
+			u.token_version,
 			u.created_date_time,
 			u.modified_date_time
 		FROM "user" u
@@ -52,8 +55,8 @@ async function createUser(req: any): Promise<User> {
 	}
 
 	const createdUser = await queryOne<User>(
-		`INSERT INTO "user" (name, email, tier, password, created_date_time, modified_date_time)
-		VALUES ($1, $2, $3, $4, NOW(), NOW())
+		`INSERT INTO "user" (name, email, tier, password, token_version, created_date_time, modified_date_time)
+		VALUES ($1, $2, $3, $4, 0, NOW(), NOW())
 		RETURNING *`,
 		[name, email, tier, hashedPassword],
 	);
@@ -120,6 +123,9 @@ async function updateUser(req: any): Promise<User> {
 		}
 
 		req.body.password = hashedPassword;
+		
+		// SECURITY: Revoke all existing tokens when password changes
+		await revokeAllUserTokens(userId);
 	}
 
 	if (email) {
@@ -139,7 +145,7 @@ async function updateUser(req: any): Promise<User> {
 	let paramIndex = 1;
 
 	Object.keys(req.body).forEach((key) => {
-		if (["name", "email", "password", "tier"].includes(key)) {
+		if (["name", "email", "password", "tier", "token_version"].includes(key)) {
 			updates.push(`${key} = $${paramIndex}`);
 			values.push(req.body[key]);
 			paramIndex++;

@@ -1,5 +1,5 @@
-const httpStatus = require("http-status");
-const ApiError = require("../utils/ApiError");
+import httpStatus from "http-status";
+import ApiError from "../utils/ApiError";
 
 function grantAccess(tier_required: number) {
 	return async (req, _res, next) => {

@@ -1,4 +1,4 @@
-const config = require("../config/config.ts");
+import config from "../config/config";
 
 async function generateQuery(req, query) {
 	const result = await req.postgres

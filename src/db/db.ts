@@ -1,5 +1,5 @@
 import { Client, QueryResult } from "pg";
-import { postgres } from "../config/postgres.js";
+import { postgres } from "../config/postgres";
 
 /**
  * Execute a SQL query with parameterized values for safe injection prevention

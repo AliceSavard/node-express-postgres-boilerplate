@@ -5,10 +5,10 @@ import compression from "compression";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
-import { postgres } from "./config/postgres.js";
+import { postgres } from "./config/postgres";
 import config from "./config/config";
 import freeman from "./config/morgan";
-import jwt from "./config/jwt";
+import ourjwt from "./config/jwt";
 import { authLimiter } from "./middlewares/rateLimiter";
 import router from "./routes/v1";
 import { errorConverter, errorHandler } from "./middlewares/error";
@@ -43,7 +43,7 @@ app.options("*", cors());
 app.use(cookieParser());
 
 // jwt authentication
-app.use(jwt());
+app.use(ourjwt());
 
 // connect to postgres database
 app.use((req: Request, _: Response, next: NextFunction) => {

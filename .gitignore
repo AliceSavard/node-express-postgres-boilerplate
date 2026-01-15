@@ -104,3 +104,5 @@ dist
 .vscode-test
 
 package-lock.json
+
+testout.txt

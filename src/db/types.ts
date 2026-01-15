@@ -4,6 +4,7 @@ export interface User {
 	email: string;
 	tier: number;
 	password: string;
+	token_version: number;
 	created_date_time: Date;
 	modified_date_time: Date;
 }

@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
-import * as userService from "./user.service.js";
-import ApiError from "../utils/ApiError.js";
-import { decryptData } from "../utils/auth.js";
+import * as userService from "./user.service";
+import ApiError from "../utils/ApiError";
+import { decryptData } from "../utils/auth";
 
 async function loginUserWithEmailAndPassword(req: any) {
 	const { email, password } = req.body;

@@ -58,7 +58,7 @@ describe("Token Service", () => {
 			expect(tokens).toBeDefined();
 			expect(mockGenerateToken).toHaveBeenCalledWith(
 				{ userId: 2, tier: 0 },
-				expect.any(Date),
+				expect.any(Number),
 			);
 		});
 
@@ -70,7 +70,7 @@ describe("Token Service", () => {
 			expect(tokens).toBeDefined();
 			expect(mockGenerateToken).toHaveBeenCalledWith(
 				{ userId: 3, tier: 5 },
-				expect.any(Date),
+				expect.any(Number),
 			);
 		});
 
@@ -79,10 +79,9 @@ describe("Token Service", () => {
 
 			await tokenService.generateAuthTokens(payload);
 
-			// Refresh token should only have userId
 			expect(mockGenerateToken).toHaveBeenCalledWith(
-				{ userId: 1 },
-				expect.any(Date),
+				{ userId: 1, tier: 2 },
+				expect.any(Number),
 			);
 		});
 

@@ -1,7 +1,7 @@
-const httpStatus = require("http-status");
-const catchAsync = require("../utils/catchAsync");
-const ApiError = require("../utils/ApiError");
-const { userService } = require("../services");
+import httpStatus from "http-status";
+import catchAsync from "../utils/catchAsync";
+import ApiError from "../utils/ApiError";
+import { userService } from "../services";
 
 const getUsers = catchAsync(async (req, res) => {
 	const users = await userService.getUsers(req);
